@@ -1,0 +1,78 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r eval=FALSE}
+[m,n] = size(a);
+[m1,n1] = size(b);
+mn = [m,n] + 2*([m1,n1]-1);
+a0 = zeros(mn);
+a0(m1:(end-m1+1),n1:(end-n1+1)) = a;
+b1 = rot90(b,2);
+b2 = b1(:);
+out = zeros(m1+m-1,n+n1-1);
+for ii = 1:mn(1)-m1+1
+    for jj =  1:mn(2)-n1+1
+        x = a0(ii:ii+m1-1,jj:jj+n1-1);
+        out(ii,jj) = x(:)'*b2;
+    end
+end
+```
+
+
+```{r}
+a <- pracma::magic(3)
+b <- pracma::magic(4)
+
+d1 <- dim(a)
+d2 <- dim(b)
+m <- dim(a)[1]; n <- dim(a)[2]
+m1 <- dim(b)[1]; n1 <- dim(b)[2]
+mn <- d1 + 2 * (d2 - 1)
+mn
+a0 <- matrix(0, nrow=mn[1], ncol=mn[2])
+a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1)] <- a
+b1 <- pracma::rot90(b, 2)
+b2 <- matrix(b1, ncol=1)
+out <- matrix(0, nrow=m1+m-1, ncol=n+n1-1)
+
+for (ii in 1:(mn[1]-m1+1)) {
+    for (jj in 1:(mn[2]-n1+1)) {
+        # cat(ii, jj,"\n")
+        x = a0[ii:(ii+m1-1), jj:(jj+n1-1)]
+        out[ii, jj] = t(matrix(x, ncol=1)) %*% b2
+    }
+}
+out
+
+   # 128    32   122   119    31    78
+   #  88   179   252   208   154   139
+   # 151   275   291   378   281   154
+   #  79   271   423   366   285   106
+   #  48   171   248   292   230    31
+   #  16    92   194   167    39     2
+
+#  convn(a,b)
+   # 128    32   122   119    31    78
+   #  88   179   252   208   154   139
+   # 151   275   291   378   281   154
+   #  79   271   423   366   285   106
+   #  48   171   248   292   230    31
+   #  16    92   194   167    39     2
+
+```
+
+
+
+```{r}
+b = pracma::magic(4)
+pracma::rot90(b, 2)
+```
+
+```{r}
+pracma::magic(3)
+```
+
