@@ -142,7 +142,7 @@ $(document).ready(function () {
 </style>
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("test_convolution_01.Rmd");
+  window.initializeSourceEmbed("test_convolution-2D_01.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
@@ -172,6 +172,7 @@ $(document).ready(function () {
 
 
 <!-- rnb-text-begin -->
+<p>Source: <a href="https://www.mathworks.com/matlabcentral/answers/278353-2d-convolution-algorithm-error-vs-conv2-function" class="uri">https://www.mathworks.com/matlabcentral/answers/278353-2d-convolution-algorithm-error-vs-conv2-function</a></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjpbIlttLG5dID0gc2l6ZShhKTsiLCJbbTEsbjFdID0gc2l6ZShiKTsiLCJtbiA9IFttLG5dICsgMiooW20xLG4xXS0xKTsiLCJhMCA9IHplcm9zKG1uKTsiLCJhMChtMTooZW5kLW0xKzEpLG4xOihlbmQtbjErMSkpID0gYTsiLCJiMSA9IHJvdDkwKGIsMik7IiwiYjIgPSBiMSg6KTsiLCJvdXQgPSB6ZXJvcyhtMSttLTEsbituMS0xKTsiLCJmb3IgaWkgPSAxOm1uKDEpLW0xKzEiLCIgICAgZm9yIGpqID0gIDE6bW4oMiktbjErMSIsIiAgICAgICAgeCA9IGEwKGlpOmlpK20xLTEsamo6amorbjEtMSk7IiwiICAgICAgICBvdXQoaWksamopID0geCg6KScqYjI7IiwiICAgIGVuZCIsImVuZCJdfQ== -->
@@ -250,17 +251,46 @@ out</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29udm4yZCA8LSBmdW5jdGlvbihhLCBiKSB7XG4gICAgZDEgPC0gZGltKGEpOyAgZDIgPC0gZGltKGIpXG4gICAgbSAgPC0gZGltKGEpWzFdOyBuIDwtIGRpbShhKVsyXVxuICAgIG0xIDwtIGRpbShiKVsxXTsgbjEgPC0gZGltKGIpWzJdXG4gICAgbW4gPC0gZDEgKyAyICogKGQyIC0gMSlcbiAgICBhMCA8LSBtYXRyaXgoMCwgbnJvdz1tblsxXSwgbmNvbD1tblsyXSlcbiAgICBhMFttMToobnJvdyhhMCktbTErMSksIG4xOihuY29sKGEwKS1uMSsxKV0gPC0gYVxuICAgIGIxIDwtIHByYWNtYTo6cm90OTAoYiwgMilcbiAgICBiMiA8LSBtYXRyaXgoYjEsIG5jb2w9MSlcbiAgICBvdXQgPC0gbWF0cml4KDAsIG5yb3c9bTErbS0xLCBuY29sPW4rbjEtMSlcbiAgICBcbiAgICBmb3IgKGlpIGluIDE6KG1uWzFdLW0xKzEpKSB7XG4gICAgICAgIGZvciAoamogaW4gMToobW5bMl0tbjErMSkpIHtcbiAgICAgICAgICAgICMgY2F0KGlpLCBqaixcIlxcblwiKVxuICAgICAgICAgICAgeCA9IGEwW2lpOihpaSttMS0xKSwgamo6KGpqK24xLTEpXVxuICAgICAgICAgICAgb3V0W2lpLCBqal0gPSB0KG1hdHJpeCh4LCBuY29sPTEpKSAlKiUgYjJcbiAgICAgICAgfVxuICAgIH1cbiAgICBvdXRcbn1cbmEgPC0gbWF0cml4KDEsIG5yb3c9MywgbmNvbD00KVxuY29udm4yZChhLCBhKVxuYGBgIn0= -->
+<pre class="r"><code>convn2d &lt;- function(a, b) {
+    d1 &lt;- dim(a);  d2 &lt;- dim(b)
+    m  &lt;- dim(a)[1]; n &lt;- dim(a)[2]
+    m1 &lt;- dim(b)[1]; n1 &lt;- dim(b)[2]
+    mn &lt;- d1 + 2 * (d2 - 1)
+    a0 &lt;- matrix(0, nrow=mn[1], ncol=mn[2])
+    a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1)] &lt;- a
+    b1 &lt;- pracma::rot90(b, 2)
+    b2 &lt;- matrix(b1, ncol=1)
+    out &lt;- matrix(0, nrow=m1+m-1, ncol=n+n1-1)
+    
+    for (ii in 1:(mn[1]-m1+1)) {
+        for (jj in 1:(mn[2]-n1+1)) {
+            # cat(ii, jj,&quot;\n&quot;)
+            x = a0[ii:(ii+m1-1), jj:(jj+n1-1)]
+            out[ii, jj] = t(matrix(x, ncol=1)) %*% b2
+        }
+    }
+    out
+}
+a &lt;- matrix(1, nrow=3, ncol=4)
+convn2d(a, a)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICBbLDFdIFssMl0gWywzXSBbLDRdIFssNV0gWyw2XSBbLDddXG5bMSxdICAgIDEgICAgMiAgICAzICAgIDQgICAgMyAgICAyICAgIDFcblsyLF0gICAgMiAgICA0ICAgIDYgICAgOCAgICA2ICAgIDQgICAgMlxuWzMsXSAgICAzICAgIDYgICAgOSAgIDEyICAgIDkgICAgNiAgICAzXG5bNCxdICAgIDIgICAgNCAgICA2ICAgIDggICAgNiAgICA0ICAgIDJcbls1LF0gICAgMSAgICAyICAgIDMgICAgNCAgICAzICAgIDIgICAgMVxuIn0= -->
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+[1,]    1    2    3    4    3    2    1
+[2,]    2    4    6    8    6    4    2
+[3,]    3    6    9   12    9    6    3
+[4,]    2    4    6    8    6    4    2
+[5,]    1    2    3    4    3    2    1</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYiA9IHByYWNtYTo6bWFnaWMoNClcbnByYWNtYTo6cm90OTAoYiwgMilcbmBgYCJ9 -->
 <pre class="r"><code>b = pracma::magic(4)
 pracma::rot90(b, 2)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICBbLDFdIFssMl0gWywzXSBbLDRdXG5bMSxdICAgIDEgICAxNSAgIDE0ICAgIDRcblsyLF0gICAxMiAgICA2ICAgIDcgICAgOVxuWzMsXSAgICA4ICAgMTAgICAxMSAgICA1XG5bNCxdICAgMTMgICAgMyAgICAyICAgMTZcbiJ9 -->
-<pre><code>     [,1] [,2] [,3] [,4]
-[1,]    1   15   14    4
-[2,]   12    6    7    9
-[3,]    8   10   11    5
-[4,]   13    3    2   16</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -268,17 +298,11 @@ pracma::rot90(b, 2)</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJhY21hOjptYWdpYygzKVxuYGBgIn0= -->
 <pre class="r"><code>pracma::magic(3)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiICAgICBbLDFdIFssMl0gWywzXVxuWzEsXSAgICA4ICAgIDEgICAgNlxuWzIsXSAgICAzICAgIDUgICAgN1xuWzMsXSAgICA0ICAgIDkgICAgMlxuIn0= -->
-<pre><code>     [,1] [,2] [,3]
-[1,]    8    1    6
-[2,]    3    5    7
-[3,]    4    9    2</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogImNvbnZvbHV0aW9uIDJEIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KDQpgYGB7ciBldmFsPUZBTFNFfQ0KW20sbl0gPSBzaXplKGEpOw0KW20xLG4xXSA9IHNpemUoYik7DQptbiA9IFttLG5dICsgMiooW20xLG4xXS0xKTsNCmEwID0gemVyb3MobW4pOw0KYTAobTE6KGVuZC1tMSsxKSxuMTooZW5kLW4xKzEpKSA9IGE7DQpiMSA9IHJvdDkwKGIsMik7DQpiMiA9IGIxKDopOw0Kb3V0ID0gemVyb3MobTErbS0xLG4rbjEtMSk7DQpmb3IgaWkgPSAxOm1uKDEpLW0xKzENCiAgICBmb3IgamogPSAgMTptbigyKS1uMSsxDQogICAgICAgIHggPSBhMChpaTppaSttMS0xLGpqOmpqK24xLTEpOw0KICAgICAgICBvdXQoaWksamopID0geCg6KScqYjI7DQogICAgZW5kDQplbmQNCmBgYA0KDQoNCmBgYHtyfQ0KYSA8LSBwcmFjbWE6Om1hZ2ljKDMpDQpiIDwtIHByYWNtYTo6bWFnaWMoNCkNCg0KZDEgPC0gZGltKGEpDQpkMiA8LSBkaW0oYikNCm0gPC0gZGltKGEpWzFdOyBuIDwtIGRpbShhKVsyXQ0KbTEgPC0gZGltKGIpWzFdOyBuMSA8LSBkaW0oYilbMl0NCm1uIDwtIGQxICsgMiAqIChkMiAtIDEpDQptbg0KYTAgPC0gbWF0cml4KDAsIG5yb3c9bW5bMV0sIG5jb2w9bW5bMl0pDQphMFttMToobnJvdyhhMCktbTErMSksIG4xOihuY29sKGEwKS1uMSsxKV0gPC0gYQ0KYjEgPC0gcHJhY21hOjpyb3Q5MChiLCAyKQ0KYjIgPC0gbWF0cml4KGIxLCBuY29sPTEpDQpvdXQgPC0gbWF0cml4KDAsIG5yb3c9bTErbS0xLCBuY29sPW4rbjEtMSkNCg0KZm9yIChpaSBpbiAxOihtblsxXS1tMSsxKSkgew0KICAgIGZvciAoamogaW4gMToobW5bMl0tbjErMSkpIHsNCiAgICAgICAgIyBjYXQoaWksIGpqLCJcbiIpDQogICAgICAgIHggPSBhMFtpaTooaWkrbTEtMSksIGpqOihqaituMS0xKV0NCiAgICAgICAgb3V0W2lpLCBqal0gPSB0KG1hdHJpeCh4LCBuY29sPTEpKSAlKiUgYjINCiAgICB9DQp9DQpvdXQNCg0KICAgIyAxMjggICAgMzIgICAxMjIgICAxMTkgICAgMzEgICAgNzgNCiAgICMgIDg4ICAgMTc5ICAgMjUyICAgMjA4ICAgMTU0ICAgMTM5DQogICAjIDE1MSAgIDI3NSAgIDI5MSAgIDM3OCAgIDI4MSAgIDE1NA0KICAgIyAgNzkgICAyNzEgICA0MjMgICAzNjYgICAyODUgICAxMDYNCiAgICMgIDQ4ICAgMTcxICAgMjQ4ICAgMjkyICAgMjMwICAgIDMxDQogICAjICAxNiAgICA5MiAgIDE5NCAgIDE2NyAgICAzOSAgICAgMg0KDQojICBjb252bihhLGIpDQogICAjIDEyOCAgICAzMiAgIDEyMiAgIDExOSAgICAzMSAgICA3OA0KICAgIyAgODggICAxNzkgICAyNTIgICAyMDggICAxNTQgICAxMzkNCiAgICMgMTUxICAgMjc1ICAgMjkxICAgMzc4ICAgMjgxICAgMTU0DQogICAjICA3OSAgIDI3MSAgIDQyMyAgIDM2NiAgIDI4NSAgIDEwNg0KICAgIyAgNDggICAxNzEgICAyNDggICAyOTIgICAyMzAgICAgMzENCiAgICMgIDE2ICAgIDkyICAgMTk0ICAgMTY3ICAgIDM5ICAgICAyDQoNCmBgYA0KDQoNCg0KYGBge3J9DQpiID0gcHJhY21hOjptYWdpYyg0KQ0KcHJhY21hOjpyb3Q5MChiLCAyKQ0KYGBgDQoNCmBgYHtyfQ0KcHJhY21hOjptYWdpYygzKQ0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogImNvbnZvbHV0aW9uIDJEIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KU291cmNlOiBodHRwczovL3d3dy5tYXRod29ya3MuY29tL21hdGxhYmNlbnRyYWwvYW5zd2Vycy8yNzgzNTMtMmQtY29udm9sdXRpb24tYWxnb3JpdGhtLWVycm9yLXZzLWNvbnYyLWZ1bmN0aW9uDQoNCg0KYGBge3IgZXZhbD1GQUxTRX0NClttLG5dID0gc2l6ZShhKTsNClttMSxuMV0gPSBzaXplKGIpOw0KbW4gPSBbbSxuXSArIDIqKFttMSxuMV0tMSk7DQphMCA9IHplcm9zKG1uKTsNCmEwKG0xOihlbmQtbTErMSksbjE6KGVuZC1uMSsxKSkgPSBhOw0KYjEgPSByb3Q5MChiLDIpOw0KYjIgPSBiMSg6KTsNCm91dCA9IHplcm9zKG0xK20tMSxuK24xLTEpOw0KZm9yIGlpID0gMTptbigxKS1tMSsxDQogICAgZm9yIGpqID0gIDE6bW4oMiktbjErMQ0KICAgICAgICB4ID0gYTAoaWk6aWkrbTEtMSxqajpqaituMS0xKTsNCiAgICAgICAgb3V0KGlpLGpqKSA9IHgoOiknKmIyOw0KICAgIGVuZA0KZW5kDQpgYGANCg0KDQpgYGB7cn0NCmEgPC0gcHJhY21hOjptYWdpYygzKQ0KYiA8LSBwcmFjbWE6Om1hZ2ljKDQpDQoNCmQxIDwtIGRpbShhKQ0KZDIgPC0gZGltKGIpDQptIDwtIGRpbShhKVsxXTsgbiA8LSBkaW0oYSlbMl0NCm0xIDwtIGRpbShiKVsxXTsgbjEgPC0gZGltKGIpWzJdDQptbiA8LSBkMSArIDIgKiAoZDIgLSAxKQ0KbW4NCmEwIDwtIG1hdHJpeCgwLCBucm93PW1uWzFdLCBuY29sPW1uWzJdKQ0KYTBbbTE6KG5yb3coYTApLW0xKzEpLCBuMToobmNvbChhMCktbjErMSldIDwtIGENCmIxIDwtIHByYWNtYTo6cm90OTAoYiwgMikNCmIyIDwtIG1hdHJpeChiMSwgbmNvbD0xKQ0Kb3V0IDwtIG1hdHJpeCgwLCBucm93PW0xK20tMSwgbmNvbD1uK24xLTEpDQoNCmZvciAoaWkgaW4gMToobW5bMV0tbTErMSkpIHsNCiAgICBmb3IgKGpqIGluIDE6KG1uWzJdLW4xKzEpKSB7DQogICAgICAgICMgY2F0KGlpLCBqaiwiXG4iKQ0KICAgICAgICB4ID0gYTBbaWk6KGlpK20xLTEpLCBqajooamorbjEtMSldDQogICAgICAgIG91dFtpaSwgampdID0gdChtYXRyaXgoeCwgbmNvbD0xKSkgJSolIGIyDQogICAgfQ0KfQ0Kb3V0DQoNCiAgICMgMTI4ICAgIDMyICAgMTIyICAgMTE5ICAgIDMxICAgIDc4DQogICAjICA4OCAgIDE3OSAgIDI1MiAgIDIwOCAgIDE1NCAgIDEzOQ0KICAgIyAxNTEgICAyNzUgICAyOTEgICAzNzggICAyODEgICAxNTQNCiAgICMgIDc5ICAgMjcxICAgNDIzICAgMzY2ICAgMjg1ICAgMTA2DQogICAjICA0OCAgIDE3MSAgIDI0OCAgIDI5MiAgIDIzMCAgICAzMQ0KICAgIyAgMTYgICAgOTIgICAxOTQgICAxNjcgICAgMzkgICAgIDINCg0KIyAgY29udm4oYSxiKQ0KICAgIyAxMjggICAgMzIgICAxMjIgICAxMTkgICAgMzEgICAgNzgNCiAgICMgIDg4ICAgMTc5ICAgMjUyICAgMjA4ICAgMTU0ICAgMTM5DQogICAjIDE1MSAgIDI3NSAgIDI5MSAgIDM3OCAgIDI4MSAgIDE1NA0KICAgIyAgNzkgICAyNzEgICA0MjMgICAzNjYgICAyODUgICAxMDYNCiAgICMgIDQ4ICAgMTcxICAgMjQ4ICAgMjkyICAgMjMwICAgIDMxDQogICAjICAxNiAgICA5MiAgIDE5NCAgIDE2NyAgICAzOSAgICAgMg0KDQpgYGANCg0KDQpgYGB7cn0NCmNvbnZuMmQgPC0gZnVuY3Rpb24oYSwgYikgew0KICAgIGQxIDwtIGRpbShhKTsgIGQyIDwtIGRpbShiKQ0KICAgIG0gIDwtIGRpbShhKVsxXTsgbiA8LSBkaW0oYSlbMl0NCiAgICBtMSA8LSBkaW0oYilbMV07IG4xIDwtIGRpbShiKVsyXQ0KICAgIG1uIDwtIGQxICsgMiAqIChkMiAtIDEpDQogICAgYTAgPC0gbWF0cml4KDAsIG5yb3c9bW5bMV0sIG5jb2w9bW5bMl0pDQogICAgYTBbbTE6KG5yb3coYTApLW0xKzEpLCBuMToobmNvbChhMCktbjErMSldIDwtIGENCiAgICBiMSA8LSBwcmFjbWE6OnJvdDkwKGIsIDIpDQogICAgYjIgPC0gbWF0cml4KGIxLCBuY29sPTEpDQogICAgb3V0IDwtIG1hdHJpeCgwLCBucm93PW0xK20tMSwgbmNvbD1uK24xLTEpDQogICAgDQogICAgZm9yIChpaSBpbiAxOihtblsxXS1tMSsxKSkgew0KICAgICAgICBmb3IgKGpqIGluIDE6KG1uWzJdLW4xKzEpKSB7DQogICAgICAgICAgICAjIGNhdChpaSwgamosIlxuIikNCiAgICAgICAgICAgIHggPSBhMFtpaTooaWkrbTEtMSksIGpqOihqaituMS0xKV0NCiAgICAgICAgICAgIG91dFtpaSwgampdID0gdChtYXRyaXgoeCwgbmNvbD0xKSkgJSolIGIyDQogICAgICAgIH0NCiAgICB9DQogICAgb3V0DQp9DQoNCmEgPC0gbWF0cml4KDEsIG5yb3c9MywgbmNvbD00KQ0KDQpjb252bjJkKGEsIGEpDQogICAgICMgMSAgICAgMiAgICAgMyAgICAgNCAgICAgMyAgICAgMiAgICAgMQ0KICAgICAjIDIgICAgIDQgICAgIDYgICAgIDggICAgIDYgICAgIDQgICAgIDINCiAgICAgIyAzICAgICA2ICAgICA5ICAgIDEyICAgICA5ICAgICA2ICAgICAzDQogICAgICMgMiAgICAgNCAgICAgNiAgICAgOCAgICAgNiAgICAgNCAgICAgMg0KICAgICAjIDEgICAgIDIgICAgIDMgICAgIDQgICAgIDMgICAgIDIgICAgIDENCmBgYA0KDQoNCg0KYGBge3J9DQpiID0gcHJhY21hOjptYWdpYyg0KQ0KcHJhY21hOjpyb3Q5MChiLCAyKQ0KYGBgDQoNCmBgYHtyfQ0KcHJhY21hOjptYWdpYygzKQ0KYGBgDQoNCg==</div>
 
 
 

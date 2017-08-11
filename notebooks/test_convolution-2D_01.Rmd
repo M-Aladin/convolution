@@ -1,8 +1,9 @@
 ---
-title: "R Notebook"
+title: "convolution 2D"
 output: html_notebook
 ---
 
+Source: https://www.mathworks.com/matlabcentral/answers/278353-2d-convolution-algorithm-error-vs-conv2-function
 
 
 ```{r eval=FALSE}
@@ -63,6 +64,39 @@ out
    #  48   171   248   292   230    31
    #  16    92   194   167    39     2
 
+```
+
+
+```{r}
+convn2d <- function(a, b) {
+    d1 <- dim(a);  d2 <- dim(b)
+    m  <- dim(a)[1]; n <- dim(a)[2]
+    m1 <- dim(b)[1]; n1 <- dim(b)[2]
+    mn <- d1 + 2 * (d2 - 1)
+    a0 <- matrix(0, nrow=mn[1], ncol=mn[2])
+    a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1)] <- a
+    b1 <- pracma::rot90(b, 2)
+    b2 <- matrix(b1, ncol=1)
+    out <- matrix(0, nrow=m1+m-1, ncol=n+n1-1)
+    
+    for (ii in 1:(mn[1]-m1+1)) {
+        for (jj in 1:(mn[2]-n1+1)) {
+            # cat(ii, jj,"\n")
+            x = a0[ii:(ii+m1-1), jj:(jj+n1-1)]
+            out[ii, jj] = t(matrix(x, ncol=1)) %*% b2
+        }
+    }
+    out
+}
+
+a <- matrix(1, nrow=3, ncol=4)
+
+convn2d(a, a)
+     # 1     2     3     4     3     2     1
+     # 2     4     6     8     6     4     2
+     # 3     6     9    12     9     6     3
+     # 2     4     6     8     6     4     2
+     # 1     2     3     4     3     2     1
 ```
 
 
