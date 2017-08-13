@@ -1,161 +1,9 @@
 ---
-title: "convolution 2D"
+title: "convolution 3D"
 output: html_notebook
 ---
 
-Source: https://www.mathworks.com/matlabcentral/answers/278353-2d-convolution-algorithm-error-vs-conv2-function
-
-
-```{r eval=FALSE}
-[m,n] = size(a);
-[m1,n1] = size(b);
-mn = [m,n] + 2*([m1,n1]-1);
-a0 = zeros(mn);
-a0(m1:(end-m1+1),n1:(end-n1+1)) = a;
-b1 = rot90(b,2);
-b2 = b1(:);
-out = zeros(m1+m-1,n+n1-1);
-for ii = 1:mn(1)-m1+1
-    for jj =  1:mn(2)-n1+1
-        x = a0(ii:ii+m1-1,jj:jj+n1-1);
-        out(ii,jj) = x(:)'*b2;
-    end
-end
-```
-
-
-```{r}
-# function to rotate 3d array in 90 degrees jumps
-rot90.3d <- function(z, n) {
-    p <- dim(z)[3]
-    if (n%%2 == 0) out <- array(0, dim=dim(z))
-    else out <- array(0, dim = c(dim(z)[2], dim(z)[1], dim(z)[3]))
-    
-    for (k in 1:p) {
-        mx <- z[,,k]
-        out[,,k] <- pracma::rot90(mx, n)
-    }
-    out
-}
-a <- array(1:18, dim = c(3,3,2))
-b <- array(1:32, dim = c(4,4,2))
-
-d1 <- dim(a)
-d2 <- dim(b)
-
-m  <- dim(a)[1]; n  <- dim(a)[2];  p  <- dim(a)[3]
-m1 <- dim(b)[1]; n1 <- dim(b)[2];  p1 <- dim(b)[3]
-
-mn <- d1 + 2 * (d2 - 1)
-
-# fill array a0 with a
-a0 <- array(0, dim = c(mn[1], mn[2], mn[3]))
-a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1), p1:(dim(a0)[3]-p1+1)] <- a
-
-b1  <- rot90.3d(b, 2)
-b2  <- matrix(b1, ncol=1)
-
-# output array
-out <- array(0, dim = c(m1+m-1, n+n1-1, p+p1-1))
-
-for (ii in 1:(mn[1]-m1+1)) {
-    for (jj in 1:(mn[2]-n1+1)) {
-        for (kk in 1:(mn[3]-p1+1)) {
-            # cat(ii, jj, kk, "\n")
-            x = a0[ii:(ii+m1-1), jj:(jj+n1-1), kk:(kk+p1-1)]
-            out[ii, jj, kk] = t(matrix(x, ncol=1)) %*% b2
-        }
-    }
-}
-out
-
-
-```
-
-ans(:,:,1) =
-
-     1     9    36    84   115    91
-     4    29    99   207   263   202
-    10    62   192   372   446   334
-    16    83   237   417   485   358
-    17    75   198   330   365   263
-    12    48   120   192   204   144
-
-
-ans(:,:,2) =
-
-    27         152         399         603         604         411
-    83         376         927        1359        1324         887
-    170         676        1590        2274        2164        1430
-    209         772        1761        2445        2296        1505
-    177         604        1329        1809        1664        1077
-    108         348         744         996         900         576
-
-
-ans(:,:,3) =
-
-    170         431         795         951         777         464
-    367         923        1692        2016        1637         973
-    592        1478        2694        3198        2582        1528
-    625        1553        2820        3324        2675        1579
-    448        1105        1995        2343        1875        1102
-    240         588        1056        1236         984         576
-
-
-
-
-
-```{r}
-apply(a0, 1:length(dim(a0)), function(x) eval(parse(text=x)) )
-```
-
-
-
-
-```{r}
-convn2d <- function(a, b) {
-    d1 <- dim(a);  d2 <- dim(b)
-    m  <- dim(a)[1]; n <- dim(a)[2]
-    m1 <- dim(b)[1]; n1 <- dim(b)[2]
-    mn <- d1 + 2 * (d2 - 1)
-    a0 <- matrix(0, nrow=mn[1], ncol=mn[2])
-    a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1)] <- a
-    b1 <- pracma::rot90(b, 2)
-    b2 <- matrix(b1, ncol=1)
-    out <- matrix(0, nrow=m1+m-1, ncol=n+n1-1)
-    
-    for (ii in 1:(mn[1]-m1+1)) {
-        for (jj in 1:(mn[2]-n1+1)) {
-            # cat(ii, jj,"\n")
-            x = a0[ii:(ii+m1-1), jj:(jj+n1-1)]
-            out[ii, jj] = t(matrix(x, ncol=1)) %*% b2
-        }
-    }
-    out
-}
-
-a <- matrix(1, nrow=3, ncol=4)
-
-convn2d(a, a)
-     # 1     2     3     4     3     2     1
-     # 2     4     6     8     6     4     2
-     # 3     6     9    12     9     6     3
-     # 2     4     6     8     6     4     2
-     # 1     2     3     4     3     2     1
-```
-
-
-
-```{r}
-b = pracma::magic(4)
-pracma::rot90(b, 2)
-```
-
-```{r}
-pracma::magic(3)
-```
-
-
+## convolution 3D
 
 mn <- d1 + 2 * (d2 - 1)
 
@@ -212,6 +60,16 @@ for (x1 in 1:dim(A)[1]) {
 C
 ```
 
+## function `conv3d`
+```{r}
+source("../R/convolution3d.R")
+
+A <- array(1:18, dim = c(3,3,2))
+B <- array(1:32, dim = c(4,4,2))
+
+conv3d(A, B)
+```
+
 
 ```{r}
 # remove all slices that are zero
@@ -228,10 +86,6 @@ d2 <- d3[,apply(d3, 2, function(x) !all(x==0)),]
 # remove all rows that are zero
 d1 <- d2[apply(d2, 1, function(x) !all(x==0)),,] 
 ```
-
-
-
-
 
 
 ## 1st loop to remove all-zero matrices from array
