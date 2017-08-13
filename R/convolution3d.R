@@ -7,8 +7,8 @@ conv3d <- function(A, B) {
     d1 = dim(A)
     d2 = dim(B)
     
-    m  <- dim(a)[1]; n  <- dim(a)[2];  p  <- dim(a)[3]
-    m1 <- dim(b)[1]; n1 <- dim(b)[2];  p1 <- dim(b)[3]
+    m  <- dim(A)[1]; n  <- dim(A)[2];  p  <- dim(A)[3]
+    m1 <- dim(B)[1]; n1 <- dim(B)[2];  p1 <- dim(B)[3]
     
     mn <- d1 + 2 * (d2 - 1)
     
