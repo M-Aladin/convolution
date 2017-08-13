@@ -1,0 +1,127 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+https://stackoverflow.com/questions/23302072/use-apply-on-a-multi-dimension-array
+
+```{r}
+a<-array(0,dim=c(2,3,4))
+a
+```
+
+
+```{r}
+apply(a,c(2,3),sum)
+```
+
+
+```{r}
+z <- array(1:24, dim = 2:4)
+dim(z)
+z
+```
+
+
+```{r}
+apply(z, 1, function(x) sum(x))
+```
+
+```{r}
+apply(z, 2, function(x) sum(x))
+```
+
+```{r}
+apply(z, 3, function(x) sum(x))
+```
+
+What's going on here? Well, we create a three-dimensional array z. If you use apply with MARGIN=1 you get row sums (two values because there are two rows), if you use MARGIN=2 you get column sums (three values because there are three columns), and if you use MARGIN=3 you get sums across the array's third dimension (four values because there are four levels to the third dimension of the array).
+
+If you specify a vector for MARGIN, like c(2,3) you get the sum of the rows for each column and level of the third dimension. Note how in the above examples, the results from apply with MARGIN=1 are the row sums and with MARGIN=2 the column sums, respectively, of the matrix seen in the result below:
+
+
+```{r}
+apply(z, c(2,3), function(x) sum(x))
+```
+
+
+If you specify all of the dimensions as MARGIN=c(1,2,3) you simply get the original three-dimensional object:
+
+```{r}
+all.equal(z, apply(z, c(1,2,3), function(x) sum(x)))
+```
+
+```{r}
+apply(z, c(1, 2,3), function(x) sum(x))
+```
+
+
+```{r}
+apply(z, c(3), function(x) x)
+```
+
+
+
+```{r}
+z
+```
+
+
+```{r}
+z[,,1]
+z[,,2]
+z[,,3]
+z[,,4]
+```
+
+
+```{r}
+# rotate and store array matrices
+z <- array(1:24, dim = 2:4)
+# iterate through matrices in array and rotate
+p <- dim(z)[3]
+out <- array(0, dim=2:4)
+
+for (k in 1:p) {
+    mx <- z[,,k]
+    out[,,k] <- pracma::rot90(mx,2)
+}
+out
+```
+
+
+```{r}
+# function to rotate 3d array in 90 degrees jumps
+rot90.3d <- function(z, n) {
+    p <- dim(z)[3]
+    if (n%%2 == 0) out <- array(0, dim=dim(z))
+    else out <- array(0, dim = c(dim(z)[2], dim(z)[1], dim(z)[3]))
+    
+    for (k in 1:p) {
+        mx <- z[,,k]
+        out[,,k] <- pracma::rot90(mx, n)
+    }
+    out
+}
+
+
+
+# test
+z <- array(1:24, dim = 2:4)
+
+rot90.3d(z, 1)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+

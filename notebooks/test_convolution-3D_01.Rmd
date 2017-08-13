@@ -1,0 +1,383 @@
+---
+title: "convolution 2D"
+output: html_notebook
+---
+
+Source: https://www.mathworks.com/matlabcentral/answers/278353-2d-convolution-algorithm-error-vs-conv2-function
+
+
+```{r eval=FALSE}
+[m,n] = size(a);
+[m1,n1] = size(b);
+mn = [m,n] + 2*([m1,n1]-1);
+a0 = zeros(mn);
+a0(m1:(end-m1+1),n1:(end-n1+1)) = a;
+b1 = rot90(b,2);
+b2 = b1(:);
+out = zeros(m1+m-1,n+n1-1);
+for ii = 1:mn(1)-m1+1
+    for jj =  1:mn(2)-n1+1
+        x = a0(ii:ii+m1-1,jj:jj+n1-1);
+        out(ii,jj) = x(:)'*b2;
+    end
+end
+```
+
+
+```{r}
+# function to rotate 3d array in 90 degrees jumps
+rot90.3d <- function(z, n) {
+    p <- dim(z)[3]
+    if (n%%2 == 0) out <- array(0, dim=dim(z))
+    else out <- array(0, dim = c(dim(z)[2], dim(z)[1], dim(z)[3]))
+    
+    for (k in 1:p) {
+        mx <- z[,,k]
+        out[,,k] <- pracma::rot90(mx, n)
+    }
+    out
+}
+a <- array(1:18, dim = c(3,3,2))
+b <- array(1:32, dim = c(4,4,2))
+
+d1 <- dim(a)
+d2 <- dim(b)
+
+m  <- dim(a)[1]; n  <- dim(a)[2];  p  <- dim(a)[3]
+m1 <- dim(b)[1]; n1 <- dim(b)[2];  p1 <- dim(b)[3]
+
+mn <- d1 + 2 * (d2 - 1)
+
+# fill array a0 with a
+a0 <- array(0, dim = c(mn[1], mn[2], mn[3]))
+a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1), p1:(dim(a0)[3]-p1+1)] <- a
+
+b1  <- rot90.3d(b, 2)
+b2  <- matrix(b1, ncol=1)
+
+# output array
+out <- array(0, dim = c(m1+m-1, n+n1-1, p+p1-1))
+
+for (ii in 1:(mn[1]-m1+1)) {
+    for (jj in 1:(mn[2]-n1+1)) {
+        for (kk in 1:(mn[3]-p1+1)) {
+            # cat(ii, jj, kk, "\n")
+            x = a0[ii:(ii+m1-1), jj:(jj+n1-1), kk:(kk+p1-1)]
+            out[ii, jj, kk] = t(matrix(x, ncol=1)) %*% b2
+        }
+    }
+}
+out
+
+
+```
+
+ans(:,:,1) =
+
+     1     9    36    84   115    91
+     4    29    99   207   263   202
+    10    62   192   372   446   334
+    16    83   237   417   485   358
+    17    75   198   330   365   263
+    12    48   120   192   204   144
+
+
+ans(:,:,2) =
+
+    27         152         399         603         604         411
+    83         376         927        1359        1324         887
+    170         676        1590        2274        2164        1430
+    209         772        1761        2445        2296        1505
+    177         604        1329        1809        1664        1077
+    108         348         744         996         900         576
+
+
+ans(:,:,3) =
+
+    170         431         795         951         777         464
+    367         923        1692        2016        1637         973
+    592        1478        2694        3198        2582        1528
+    625        1553        2820        3324        2675        1579
+    448        1105        1995        2343        1875        1102
+    240         588        1056        1236         984         576
+
+
+
+
+
+```{r}
+apply(a0, 1:length(dim(a0)), function(x) eval(parse(text=x)) )
+```
+
+
+
+
+```{r}
+convn2d <- function(a, b) {
+    d1 <- dim(a);  d2 <- dim(b)
+    m  <- dim(a)[1]; n <- dim(a)[2]
+    m1 <- dim(b)[1]; n1 <- dim(b)[2]
+    mn <- d1 + 2 * (d2 - 1)
+    a0 <- matrix(0, nrow=mn[1], ncol=mn[2])
+    a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1)] <- a
+    b1 <- pracma::rot90(b, 2)
+    b2 <- matrix(b1, ncol=1)
+    out <- matrix(0, nrow=m1+m-1, ncol=n+n1-1)
+    
+    for (ii in 1:(mn[1]-m1+1)) {
+        for (jj in 1:(mn[2]-n1+1)) {
+            # cat(ii, jj,"\n")
+            x = a0[ii:(ii+m1-1), jj:(jj+n1-1)]
+            out[ii, jj] = t(matrix(x, ncol=1)) %*% b2
+        }
+    }
+    out
+}
+
+a <- matrix(1, nrow=3, ncol=4)
+
+convn2d(a, a)
+     # 1     2     3     4     3     2     1
+     # 2     4     6     8     6     4     2
+     # 3     6     9    12     9     6     3
+     # 2     4     6     8     6     4     2
+     # 1     2     3     4     3     2     1
+```
+
+
+
+```{r}
+b = pracma::magic(4)
+pracma::rot90(b, 2)
+```
+
+```{r}
+pracma::magic(3)
+```
+
+
+
+mn <- d1 + 2 * (d2 - 1)
+
+# fill array a0 with a
+a0 <- array(0, dim = c(mn[1], mn[2], mn[3]))
+a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1), p1:(dim(a0)[3]-p1+1)] <- a
+
+b1  <- rot90.3d(b, 2)
+b2  <- matrix(b1, ncol=1)
+
+# output array
+out <- array(0, dim = c(m1+m-1, n+n1-1, p+p1-1))
+
+
+```{r}
+# https://stackoverflow.com/questions/14786920/convolution-of-two-three-dimensional-arrays-with-padding-on-one-side-too-slow
+
+A <- array(1:18, dim = c(3,3,2))
+B <- array(1:32, dim = c(4,4,2))
+
+dimA = dim(A)[1]
+dimB = dim(B)[1]
+dimC = dimA + dimB
+
+d1 = dim(A)
+d2 = dim(B)
+
+m  <- dim(a)[1]; n  <- dim(a)[2];  p  <- dim(a)[3]
+m1 <- dim(b)[1]; n1 <- dim(b)[2];  p1 <- dim(b)[3]
+
+mn <- d1 + 2 * (d2 - 1)
+
+C = array(0, dim = c(dimC, dimC, dimC))
+#C = array(0, dim = c(m1+m-1, n+n1-1, p+p1-1))
+
+for (x1 in 1:dim(A)[1]) {
+    for (x2 in 1:dim(B)[1]) {
+        for (y1 in 1:dim(A)[2]) {
+            for(y2 in 1:dim(B)[2]) {
+                for (z1 in 1:dim(A)[3]) {
+                    for (z2 in 1:dim(B)[3]) {
+                        x = x1+x2
+                        y = y1 + y2
+                        z = z1 +  z2
+                        C[x,y,z] = C[x,y,z] + A[x1,y1,z1] * B[x2,y2,z2]
+                    }
+                }
+            }
+                
+        }
+    }
+}
+
+C
+```
+
+
+```{r}
+# remove all slices that are zero
+d3 <- C[,,apply(C, 3, function(x) !all(x==0))] 
+```
+
+
+```{r}
+# remove all columns that are zero
+d2 <- d3[,apply(d3, 2, function(x) !all(x==0)),] 
+```
+
+```{r}
+# remove all rows that are zero
+d1 <- d2[apply(d2, 1, function(x) !all(x==0)),,] 
+```
+
+
+
+
+
+
+## 1st loop to remove all-zero matrices from array
+
+```{r}
+# 1st loop to remove all-zero matrices from array
+# removing zeros from the convolution array
+
+#result <- array(dim=c(dim(array1)[1], dim(array2)[2], dim(array1)[3]))
+res <- array()
+D = array(0, dim = dim(C))
+
+# first loop to remove the matrices with all zeros
+ix = 1
+for (i in 1: dim(C)[3]) {
+    #result[,,i] <- C[,,i]
+    cat(sum(colSums(C[,,i])), "\n")
+    if (sum(colSums(C[,,i])) != 0) {
+        D[,,ix] = C[,,i]
+        ix = ix + 1
+    }
+}
+D = array(D, dim = c(dim(C)[1], dim(C)[2], ix-1) )
+D
+dim(D)
+```
+
+
+
+
+```{r}
+E <- array(0, dim = dim(D))
+E <-  D
+for (k in 1:dim(E)[3]) {
+    # print(E[,,k])
+    E0 = E[,,k]
+    print(E0)
+    print(E[,,] >0)
+}    
+```
+
+
+```{r}
+# second loop to remove empty columns
+E <- array(0, dim = dim(D))
+
+for (k in 1:dim(D)[3]) {
+    j2 = 1
+    for (j in 1:dim(D)[2]) {
+        # cat(sum(rowSums(D[,j,k])), "\n")
+        # print(k)
+        # print(sum(D[,j,k]))
+        if (sum(D[,j2,k]) != 0) {
+            E[,j2,k] = D[,j,k]
+            ij = ij + 1
+        }
+    }
+}
+E
+
+```
+
+
+```{r}
+library(abind)
+# second loop to remove empty columns but with apply
+E <- array(0, dim = dim(D))
+
+for (k in 1:dim(D)[3]) {
+    M = D[,,k]
+    # print(M)
+    # print(M[,which(!apply(M,2,FUN = function(x){all(x == 0)}))])
+    N = M[,which(!apply(M,2,FUN = function(x){all(x == 0)}))]
+    abind(lapply(1:dim(M)[3], function(i) a1[,,i] %*% a2[,,i]), along = 3)
+}
+
+```
+
+```{r}
+# print a 3D array without a foor loop
+abind(lapply(1:dim(D)[3], function(i) D[,,i]), along = 3)
+```
+
+
+```{r}
+# print a 3D array without a foor loop
+abind(lapply(1:dim(D)[3], function(i) D[,colSums(D[,,i]) != 0,]), along = 3)
+```
+
+
+
+```{r}
+abind(lapply(1:dim(D)[3], function(i) D[,which(!apply(D,2,FUN = function(x) {all(x == 0)}))]), along = 3)
+```
+
+
+
+```{r}
+# third loop to remove empty columns
+F <- array(0, dim = dim(C))
+
+for (k in 1:dim(E)[3]) {
+    ii = 1
+    for (i in 1:dim(E)[1]) {
+        if (sum(E[i,,k]) != 0) {
+            F[ii,,k] = E[i,,k]
+            ii = ii + 1
+        }
+    }
+}
+F
+
+```
+
+
+
+```{r}
+library(abind)
+
+abind(lapply(1:dim(C)[3], function(i) C[,,i] != 0), along = 3)
+```
+
+
+
+```{r}
+# multiplying arrays
+array1 <- array(1:30,dim=c(3,2,5))
+array2 <- array(1:20,dim=c(2,2,5))
+
+# I know that I can get what I want with the following computation :
+
+result <- array(dim=c(dim(array1)[1], dim(array2)[2], dim(array1)[3]))
+for (i in 1: dim(array1)[3])
+{
+         result[,,i] <- array1[,,i] %*% array2[,,i]
+}         
+result
+```
+
+```{r}
+# same as the for loop but using abind
+a1 = array1
+a2 = array2
+
+library(abind)
+abind(lapply(1:dim(a1)[3], function(i) a1[,,i] %*% a2[,,i]), along = 3)
+```
+
+
