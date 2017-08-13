@@ -64,12 +64,69 @@ C
 ```{r}
 source("../R/convolution3d.R")
 
-A <- array(1:18, dim = c(3,3,2))
-B <- array(1:32, dim = c(4,4,2))
+a <- A <- array(1:18, dim = c(3,3,2))
+b <- B <- array(1:32, dim = c(4,4,2))
 
 conv3d(A, B)
 ```
 
+```{r}
+source("../R/convolution3d.R")
+
+a <- A <- array(1:18, dim = c(3, 3, 2))
+b <- B <- array(1:32, dim = c(4, 4, 2))
+c <- C <- array(1:16, dim = c(2, 4, 2))
+D <- array(1:64, dim = c(4, 8, 2))
+
+conv3d(D, A)
+```
+
+
+```{r}
+a <- A <- array(1:18, dim = c(3, 3, 2))
+b <- B <- array(1:32, dim = c(4, 4, 2))
+c <- C <- array(1:16, dim = c(2, 4, 2))
+
+# conv3d(ccpad, a)
+
+d1 <- dim(a)
+d2 <- dim(b)
+
+m  <- dim(a)[1]; n  <- dim(a)[2];  p  <- dim(a)[3]
+m1 <- dim(b)[1]; n1 <- dim(b)[2];  p1 <- dim(b)[3]
+
+mn <- d1 + 2 * (d2 - 1)
+
+# fill array a0 with a
+a0 <- array(0, dim = c(mn[1], mn[2], mn[3]))
+a0[m1:(nrow(a0)-m1+1), n1:(ncol(a0)-n1+1), p1:(dim(a0)[3]-p1+1)] <- a
+
+```
+
+>> convn(c, a)
+
+ans(:,:,1) =
+
+     1     7    24    48    63    49
+     4    23    69   123   149   112
+     7    33    90   156   175   127
+     6    24    60    96   102    72
+
+
+ans(:,:,2) =
+
+    19    90   225   327   322   217
+    59   232   543   759   724   479
+    81   284   633   873   808   525
+    54   174   372   498   450   288
+
+
+ans(:,:,3) =
+
+          90         227         417         495         403         240
+         199         497         906        1068         863         511
+         218         539         975        1149         921         542
+         120         294         528         618         492         288
 
 ```{r}
 # remove all slices that are zero
