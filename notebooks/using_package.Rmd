@@ -1,0 +1,15 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(convolution)
+
+A <- array(1:18, dim = c(3,3,2))
+B <- array(1:32, dim = c(4,4,2))
+
+convolution:::conv3d(A, B)
+
+```
+
