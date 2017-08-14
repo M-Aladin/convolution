@@ -56,3 +56,19 @@ test_that("11x5x2 by 7x5x3 arrays give expected result", {
     # print(expected)
     expect_equal(result, expected, tolerance = 0.0001)
 })
+
+
+
+test_that("11x5x2 by 7x5x3 arrays give expected result", {
+    G = array(1:393216, dim = c(512, 256, 3))
+    H = array(1:40960, dim = c(64, 128, 5))
+
+    result <- conv3d(G, H)
+    # print(result)
+    expected <- array(simplify2array(read.table(header = FALSE,
+                                                sep = ",",
+                                                file = "conv3d-575x383x7.txt")),
+                                                dim=c(575, 383, 7))
+    # print(expected)
+    expect_equal(result, expected, tolerance = 0.0001)
+})
