@@ -67,18 +67,21 @@ source("../R/convolution3d.R")
 a <- A <- array(1:18, dim = c(3,3,2))
 b <- B <- array(1:32, dim = c(4,4,2))
 
-conv3d(A, B)
+conv3d(B, D)
 ```
 
 ```{r}
 source("../R/convolution3d.R")
 
-a <- A <- array(1:18, dim = c(3, 3, 2))
-b <- B <- array(1:32, dim = c(4, 4, 2))
-c <- C <- array(1:16, dim = c(2, 4, 2))
+A <- array(1:18, dim = c(3, 3, 2))
+B <- array(1:32, dim = c(4, 4, 2))
+C <- array(1:16, dim = c(2, 4, 2))
 D <- array(1:64, dim = c(4, 8, 2))
 
-conv3d(D, A)
+#a1 <- array(1:18, dim = c(18, 1, 1))
+#b1 <- array(1:32, dim = c(32, 1, 1))
+
+conv3d(A, C)
 ```
 
 
