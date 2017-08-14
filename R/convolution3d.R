@@ -15,8 +15,6 @@ conv3d <- function(img, kernel) {
     m1 <- dim(kernel)[1]; n1 <- dim(kernel)[2];  p1 <- dim(kernel)[3]
 
     mn <- d1 + 2 * (d2 - 1)
-    print(d1)
-    print(d2)
     #out = array(0, dim = c(dimC+4, dimC+4, dimC+4))
     out = array(0, dim = mn)
 
