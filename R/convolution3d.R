@@ -1,15 +1,19 @@
 
+#' Convolution 3D for arrays
+#' @param img the object to convolve
+#' @param kernel the kernel
+#' @export
 conv3d <- function(img, kernel) {
     dimA = dim(img)[1]
     dimB = dim(kernel)[1]
     dimC = dimA + dimB
-    
+
     d1 = dim(img)
     d2 = dim(kernel)
-    
+
     m  <- dim(img)[1]; n  <- dim(img)[2];  p  <- dim(img)[3]
     m1 <- dim(kernel)[1]; n1 <- dim(kernel)[2];  p1 <- dim(kernel)[3]
-    
+
     mn <- d1 + 2 * (d2 - 1)
     print(d1)
     print(d2)
@@ -30,7 +34,7 @@ conv3d <- function(img, kernel) {
                         }
                     }
                 }
-                
+
             }
         }
     }
