@@ -59,16 +59,28 @@ test_that("11x5x2 by 7x5x3 arrays give expected result", {
 
 
 
-test_that("11x5x2 by 7x5x3 arrays give expected result", {
-    G = array(1:393216, dim = c(512, 256, 3))
-    H = array(1:40960, dim = c(64, 128, 5))
+test_that("512x32x3 by 64x16x5 arrays give expected result", {
+    # G = array(1:393216, dim = c(512, 256, 3))
+    # H = array(1:40960, dim = c(64, 128, 5))
 
-    result <- conv3d(G, H)
+    # G = array(1:393216, dim = c(512, 128, 3))
+    # H = array(1:40960, dim = c(64, 64, 5))
+
+    # G = array(1:393216, dim = c(512, 64, 3))     # takes about 7 minutes
+    # H = array(1:40960, dim = c(64, 32, 5))
+
+    # G4 = array(1:49152, dim = c(512, 32, 3))     # takes about 2 minutes
+    # H4 = array(1:5120,  dim = c(64, 16, 5))
+
+    G5 = array(1:24576, dim = c(512, 16, 3))     # takes about 45 seconds
+    H5 = array(1:2560,  dim = c(64, 8, 5))
+
+    result <- conv3d(G5, H5)
     # print(result)
-    # expected <- array(simplify2array(read.table(header = FALSE,
-    #                                             sep = ",",
-    #                                             file = "conv3d-575x383x7.txt")),
-    #                                             dim=c(575, 383, 7))
+    expected <- array(simplify2array(read.table(header = FALSE,
+                                                sep = ",",
+                                                file = "conv3d-575x23x7.txt")),
+                                                dim=c(575, 23, 7))
     # print(expected)
-    # expect_equal(result, expected, tolerance = 0.0001)
+    expect_equal(result, expected, tolerance = 0.0001)
 })
