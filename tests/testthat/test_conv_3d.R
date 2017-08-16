@@ -66,13 +66,13 @@ test_that("512x32x3 by 64x16x5 arrays give expected result", {
     # G = array(1:393216, dim = c(512, 128, 3))
     # H = array(1:40960, dim = c(64, 64, 5))
 
-    # G = array(1:393216, dim = c(512, 64, 3))     # takes about 7 minutes
-    # H = array(1:40960, dim = c(64, 32, 5))
+    # G3 = array(1:393216, dim = c(512, 64, 3))     # takes about 7 minutes
+    # H3 = array(1:40960, dim = c(64, 32, 5))
 
     # G4 = array(1:49152, dim = c(512, 32, 3))     # takes about 2 minutes
     # H4 = array(1:5120,  dim = c(64, 16, 5))
 
-    G5 = array(1:24576, dim = c(512, 16, 3))     # takes about 45 seconds
+    G5 = array(1:24576, dim = c(512, 16, 3))     # takes about 45 seconds in R
     H5 = array(1:2560,  dim = c(64, 8, 5))
 
     result <- conv3d(G5, H5)

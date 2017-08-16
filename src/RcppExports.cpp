@@ -6,6 +6,18 @@
 
 using namespace Rcpp;
 
+// conv3d_cpp
+arma::cube conv3d_cpp(arma::cube img, arma::cube kernel);
+RcppExport SEXP _convolution_conv3d_cpp(SEXP imgSEXP, SEXP kernelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::cube >::type img(imgSEXP);
+    Rcpp::traits::input_parameter< arma::cube >::type kernel(kernelSEXP);
+    rcpp_result_gen = Rcpp::wrap(conv3d_cpp(img, kernel));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cubeMeans
 arma::mat cubeMeans(arma::cube X);
 RcppExport SEXP _convolution_cubeMeans(SEXP XSEXP) {
@@ -19,6 +31,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_convolution_conv3d_cpp", (DL_FUNC) &_convolution_conv3d_cpp, 2},
     {"_convolution_cubeMeans", (DL_FUNC) &_convolution_cubeMeans, 1},
     {NULL, NULL, 0}
 };

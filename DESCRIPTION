@@ -1,6 +1,6 @@
 Package: convolution
 Type: Package
-Title: Convolution of vectors, matrices and arrays.
+Title: Convolution of vectors, matrices and arrays
 Version: 0.1.0
 Author: Alfonso R. Reyes <alfonso.reyes@oilgainsanalytics.com>
 Maintainer: Alfonso R. Reyes <alfonso.reyes@oilgainsanalytics.com>
@@ -8,7 +8,7 @@ Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 Imports: Rcpp, 
         RcppArmadillo   
-ByteCompile: true
+LinkingTo: Rcpp, RcppArmadillo
 License: GPL-2
 Encoding: UTF-8
 LazyData: true

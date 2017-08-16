@@ -81,7 +81,8 @@ D <- array(1:64, dim = c(4, 8, 2))
 #a1 <- array(1:18, dim = c(18, 1, 1))
 #b1 <- array(1:32, dim = c(32, 1, 1))
 
-conv3d(A, C)
+ac =conv3d(A, C)
+ac
 ```
 
 
@@ -292,6 +293,17 @@ a2 = array2
 
 library(abind)
 abind(lapply(1:dim(a1)[3], function(i) a1[,,i] %*% a2[,,i]), along = 3)
+```
+
+
+
+
+
+```{r}
+# testing C++ function
+G1 = array(1:393216, dim = c(512, 256, 3))       # 40 seconds with C++
+H1 = array(1:40960, dim = c(64, 128, 5))
+conv3d(G1, H1)
 ```
 
 

@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+source("../R/convolution3d.R")
+# source("../R/RcppExports.R")
+
+require( rbenchmark )
+
+G5 = array(1:24576, dim = c(512, 16, 3))     # takes about 45 seconds
+H5 = array(1:2560,  dim = c(64, 8, 5))
+
+G4 = array(1:49152, dim = c(512, 32, 3))     # takes about 2 minutes
+H4 = array(1:5120,  dim = c(64, 16, 5))
+
+G3 = array(1:393216, dim = c(512, 64, 3))     # takes about 7 minutes
+H3 = array(1:40960, dim = c(64, 32, 5))
+
+# conv3d(G5, H5)
+
+res <- benchmark(conv3d(G5, H5), conv3d_cpp(G5, H5),
+                 conv3d(G4, H4), conv3d_cpp(G4, H4),
+                 conv3d(G3, H3), conv3d_cpp(G3, H3), 
+                 columns = c("test", "replications",
+                             "elapsed", "relative"),
+                 order="relative",
+                 replications=2)
+
+print(res[,1:4])
+
+```
+
+
+```{r}
+conv3d_cpp(G5, H5)
+```
+
