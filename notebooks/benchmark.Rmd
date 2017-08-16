@@ -4,8 +4,9 @@ output: html_notebook
 ---
 
 ```{r}
+library(Rcpp)
 source("../R/convolution3d.R")
-# source("../R/RcppExports.R")
+sourceCpp("../src/convolution3d.cpp")
 
 require( rbenchmark )
 
@@ -22,7 +23,7 @@ H3 = array(1:40960, dim = c(64, 32, 5))
 
 res <- benchmark(conv3d(G5, H5), conv3d_cpp(G5, H5),
                  conv3d(G4, H4), conv3d_cpp(G4, H4),
-                 conv3d(G3, H3), conv3d_cpp(G3, H3), 
+                 conv3d(G3, H3), conv3d_cpp(G3, H3),
                  columns = c("test", "replications",
                              "elapsed", "relative"),
                  order="relative",
@@ -30,10 +31,70 @@ res <- benchmark(conv3d(G5, H5), conv3d_cpp(G5, H5),
 
 print(res[,1:4])
 
+# test                    replications    elapsed     relative
+# 
+# 2	conv3d_cpp(G5, H5)	    2	           0.586	   1.000
+# 4	conv3d_cpp(G4, H4)	    2	           2.339	   3.991
+# 6	conv3d_cpp(G3, H3)	    2	           7.543	  12.872
+# 1	conv3d(G5, H5)	        2	          62.779     107.131
+# 3	conv3d(G4, H4)	        2	         286.787     489.398
+# 5	conv3d(G3, H3)	        2	        1082.282	1846.898
+
+```
+
+
+
+
+```{r}
+library(Rcpp)
+library(rbenchmark)
+
+source("../R/convolution3d.R")
+sourceCpp("../src/convolution3d.cpp")
+
+G2 = array(0, dim = c(512, 128, 3))
+H2 = array(0, dim = c(64, 64, 5))
+
+# G2 = array(1:393216, dim = c(512, 128, 3))
+# H2 = array(1:40960, dim = c(64, 64, 5))
+
+apply(G2, c(1,2), function(x) sample(c(0,1),1)) 
+apply(H2, c(1,2), function(x) sample(c(0,1),1)) 
+
+res <- benchmark(conv3d(G2, H2), conv3d_cpp(G2, H2),
+                 columns = c("test", "replications",
+                             "elapsed", "relative"),
+                 order="relative",
+                 replications=2)
+
+print(res[,1:4])
+
+ 
+# test              replications    elapsed     relative
+# 2	conv3d_cpp(G2, H2)	2	        25.728	    1.000
+# 1	conv3d(G2, H2)	    2	        3058.352	118.873
 ```
 
 
 ```{r}
-conv3d_cpp(G5, H5)
+r <- 1000
+c <- 1000
+m0 <- matrix(0, r, c)
+apply(m0, c(1,2), function(x) sample(c(0,1),1)) 
+
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
