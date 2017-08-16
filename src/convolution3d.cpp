@@ -21,8 +21,8 @@ arma::cube conv3d_cpp(arma::cube img, arma::cube kernel){
     d1[0] = img.n_rows; d1[1] = img.n_cols; d1[2] = img.n_slices;
     d2[0] = kernel.n_rows; d2[1] = kernel.n_cols; d2[2] = kernel.n_slices;
 
-    cout << "d1=" << d1 << endl;
-    cout << "d2=" << d2 << endl;
+    // cout << "d1=" << d1 << endl;
+    // cout << "d2=" << d2 << endl;
 
     arma::uvec mn = d1 + 2 * (d2 - 1);
 
@@ -32,8 +32,8 @@ arma::cube conv3d_cpp(arma::cube img, arma::cube kernel){
 
     int m = img.n_rows,      n = img.n_cols,     p = img.n_slices;
     int m1 = kernel.n_rows, n1 = kernel.n_cols, p1 = kernel.n_slices;
-    cout << "m,n,p:" << m << n << p << endl;
-    cout << "m1,n1,p1:" << m1 << n1 << p1 << endl;
+    // cout << "m,n,p:" << m << n << p << endl;
+    // cout << "m1,n1,p1:" << m1 << n1 << p1 << endl;
     int x, y, z;
 
     for (int x1 = 0; x1 < m; x1++) {

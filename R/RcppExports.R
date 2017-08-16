@@ -2,10 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 conv3d_cpp <- function(img, kernel) {
-    .Call('_convolution_conv3d_cpp', PACKAGE = 'convolution', img, kernel)
+    .Call(`_convolution_conv3d_cpp`, img, kernel)
 }
 
 cubeMeans <- function(X) {
-    .Call('_convolution_cubeMeans', PACKAGE = 'convolution', X)
+    .Call(`_convolution_cubeMeans`, X)
+}
+
+rcpp_hello <- function() {
+    .Call(`_convolution_rcpp_hello`)
 }
 

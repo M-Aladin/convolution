@@ -17,7 +17,8 @@ conv3d <- function(img, kernel) {
     mn <- d1 + 2 * (d2 - 1)
     # print(mn)
     #out = array(0, dim = c(dimC+4, dimC+4, dimC+4))
-    out = array(0, dim = mn)
+    # storage.mode(out) <- "numeric"
+    out = array(0.000, dim = mn)
 
     for (x1 in 1:m) {
         for (x2 in 1:m1) {
@@ -29,7 +30,7 @@ conv3d <- function(img, kernel) {
                             y = y1 + y2
                             z = z1 + z2
                             out[x,y,z] = out[x,y,z] + img[x1,y1,z1] * kernel[x2,y2,z2]
-                            #cat(x,y,z, "\n")
+                            # cat(x,y,z, out[x,y,z], "\n")
                         }
                     }
                 }

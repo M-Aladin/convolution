@@ -1,5 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 notebooks
-^README\.Rmd$
-^README-.*\.png$
+README.Rmd
+README.md
